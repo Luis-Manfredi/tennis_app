@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
+import 'package:ionicons/ionicons.dart';
 import 'package:tennis_app/Domain/bloc_exports.dart';
 
+import '../../Data/courts_data.dart';
+import '../../Data/users_list.dart';
+import '../../Data/weather_service.dart';
 import '../../Domain/models/reservation.dart';
 import '../../Domain/models/user.dart';
+import '../../Domain/models/weather.dart';
+import '../components/custom_button.dart';
 import '../constants/colors.dart';
 import 'home.dart';
 
@@ -21,42 +28,37 @@ class _ReservationsState extends State<Reservations> {
   String? hourRange;
   User? userSelected;
   DateTime date = DateTime.now();
+  WeatherService weatherService = WeatherService();
+  Weather weather = const Weather();
 
-  List<String> courtsList = ['Cancha A', 'Cancha B', 'Cancha C'];
-  List<String> hours = [
-    '9:00 - 12:00',
-    '14:00 - 17:00',
-    '17:00 - 20:00',
-  ];
-  List<User> users = [
-    User(
-        name: 'Luis Manfredi',
-        imagePath: 'https://avatars.githubusercontent.com/u/75541418?v=4'),
-    User(
-        name: 'Anna Patrick',
-        imagePath:
-            'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80'),
-    User(
-        name: 'John Doe',
-        imagePath:
-            'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80'),
-    User(
-        name: 'Karen Smith',
-        imagePath:
-            'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80')
-  ];
+  getWeatherIcon() {
+    if (weather.chanceOfRain > 60) {
+      return Icon(Ionicons.rainy, color: primary);
+    } else if (weather.chanceOfRain > 30) {
+      return Icon(Ionicons.cloudy, color: primary);
+    } else {
+      return Icon(Ionicons.sunny, color: primary);
+    } 
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         iconTheme: IconThemeData(color: primary),
-        leading: IconButton(
-            onPressed: () => Navigator.pushReplacementNamed(context, Home.id),
-            icon: const Icon(Icons.arrow_back_ios_new_rounded)),
+        leadingWidth: 120,
+        leading: TextButton.icon(
+          onPressed: () => Navigator.pushReplacementNamed(context, Home.id),
+          style: TextButton.styleFrom(
+            padding: EdgeInsets.zero,
+            foregroundColor: primary
+          ),
+          icon: const Icon(Icons.arrow_back_ios_new_rounded), 
+          label: const Text('Regresar')
+        ),
         shadowColor: Colors.black38,
         bottom: PreferredSize(
-            preferredSize: Size(MediaQuery.of(context).size.width, 100),
+            preferredSize: Size(MediaQuery.of(context).size.width, 80),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
               child: Row(
@@ -66,7 +68,7 @@ class _ReservationsState extends State<Reservations> {
                     children: [
                       Text('Reservar',
                           style: TextStyle(color: text, fontSize: 32)),
-                      Text('Seleccione las opciones para realizar su reserva',
+                      Text('Continue para realizar su reserva',
                           style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w300,
@@ -85,7 +87,7 @@ class _ReservationsState extends State<Reservations> {
         ],
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -93,11 +95,11 @@ class _ReservationsState extends State<Reservations> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Court selection
+                // Selección de cancha
                 Padding(
                   padding: const EdgeInsets.only(left: 20),
                   child: Text('Elegir una cancha',
-                      style: TextStyle(fontSize: 20, color: primary)),
+                      style: TextStyle(fontSize: 18, color: primary)),
                 ),
                 const SizedBox(height: 5),
                 Container(
@@ -125,13 +127,13 @@ class _ReservationsState extends State<Reservations> {
                   ),
                 ),
 
-                const SizedBox(height: 20),
+                const SizedBox(height: 10),
 
-                // Hours selection
+                // Seleeción de horario
                 Padding(
                   padding: const EdgeInsets.only(left: 20),
                   child: Text('Elegir una horario',
-                      style: TextStyle(fontSize: 20, color: primary)),
+                      style: TextStyle(fontSize: 18, color: primary)),
                 ),
                 const SizedBox(height: 5),
                 Container(
@@ -159,13 +161,13 @@ class _ReservationsState extends State<Reservations> {
                   ),
                 ),
 
-                const SizedBox(height: 20),
+                const SizedBox(height: 10),
 
-                // Date selection
+                // Selección de fecha
                 Padding(
                   padding: const EdgeInsets.only(left: 20),
                   child: Text('Seleccionar una fecha',
-                      style: TextStyle(fontSize: 20, color: primary)),
+                      style: TextStyle(fontSize: 18, color: primary)),
                 ),
                 const SizedBox(height: 5),
                 ElevatedButton(
@@ -205,13 +207,28 @@ class _ReservationsState extends State<Reservations> {
                             fontWeight: FontWeight.w400,
                             fontSize: 16))),
 
-                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton.icon(
+                      onPressed: () async {
+                        await getWeather();
+                        if (context.mounted) detailsDialog(context);
+                      },
+                      style: TextButton.styleFrom(foregroundColor: primary), 
+                      icon: const Text('Información actual del clima', style: TextStyle(fontSize: 12)), 
+                      label: const Icon(Ionicons.cloudy, size: 20)
+                    ),
+                  ],
+                ),
 
-                // Select User
+                const SizedBox(height: 10),
+
+                // Seleccionar usuario
                 Padding(
                   padding: const EdgeInsets.only(left: 20),
                   child: Text('Elegir un usuario',
-                      style: TextStyle(fontSize: 20, color: primary)),
+                      style: TextStyle(fontSize: 18, color: primary)),
                 ),
                 const SizedBox(height: 5),
                 Container(
@@ -235,10 +252,10 @@ class _ReservationsState extends State<Reservations> {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   CircleAvatar(
-                                      backgroundImage:
-                                          NetworkImage(user.imagePath),
-                                      backgroundColor: primary,
-                                      radius: 18),
+                                    backgroundColor: primary,
+                                    backgroundImage: NetworkImage(user.imagePath),
+                                    radius: 18,
+                                  ),
                                   const SizedBox(width: 10),
                                   Text(user.name),
                                 ],
@@ -252,90 +269,176 @@ class _ReservationsState extends State<Reservations> {
                 ),
               ],
             ),
-            Container(
-              height: 60,
-              width: MediaQuery.of(context).size.width,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
-                  gradient: LinearGradient(
-                      colors: [primary, secondary],
-                      begin: Alignment.centerLeft,
-                      end: Alignment.centerRight)),
-              child: BlocBuilder<ReservationBloc, ReservationState>(
-                builder: (context, state) {
-                  List<Reservation> reservations = state.reservationList;
 
-                  return ElevatedButton.icon(
-                      onPressed: () {
-                        var newReservation = Reservation(
-                          title: courtSelected ?? '',
-                          hours: hourRange ?? '',
-                          date: DateFormat().add_yMd().format(DateTime.parse(date.toString())),
-                          username: userSelected == null ? '' : userSelected!.name,
-                          image: userSelected == null ? '' : userSelected!.imagePath
-                        );
-                        
-                        if (courtSelected == null || hourRange == null) {
-                          errorDialog(context, 'Debe elegir una cancha y un horario para procesar su reserva.');
-                        } 
-                        else if (reservations.isEmpty) {
-                          context.read<ReservationBloc>().add(AddReservation(reservation: newReservation));
+            // Custom Button
+            BlocBuilder<ReservationBloc, ReservationState>(
+              builder: (context, state) {
+                List<Reservation> reservations = state.reservationList;
+
+                return CustomButton(
+                  label: 'Guardar reservación',
+                  icon: const Icon(Icons.calendar_month_rounded, color: Colors.white,),
+                  fontSize: 20,
+                  onPressed: () {
+                    // Crear una reservación
+                    var newReservation = Reservation(
+                        title: courtSelected ?? '',
+                        hours: hourRange ?? '',
+                        date: DateFormat()
+                            .add_yMd()
+                            .format(DateTime.parse(date.toString())),
+                        username:
+                            userSelected == null ? '' : userSelected!.name,
+                        image: userSelected == null
+                            ? ''
+                            : userSelected!.imagePath);
+
+                    // Validar las reservas
+                    if (courtSelected == null ||
+                        hourRange == null ||
+                        userSelected == null) {
+                      errorDialog(context,
+                          'Debe seleccionar todos los campos para procesar su reserva.');
+                    } else if (reservations.isEmpty) {
+                      context
+                          .read<ReservationBloc>()
+                          .add(AddReservation(reservation: newReservation));
+                      Navigator.pushReplacementNamed(context, Home.id);
+                    } else {
+                      for (var reservation in reservations) {
+                        if (reservation.hours == newReservation.hours &&
+                            reservation.date == newReservation.date) {
+                          errorDialog(context,
+                              'Esta cancha no está disponible para este horario y fecha. Pruebe en cambiar el horario, la fecha o la cancha e intente de nuevo.');
+                        } else {
+                          context
+                              .read<ReservationBloc>()
+                              .add(AddReservation(reservation: newReservation));
                           Navigator.pushReplacementNamed(context, Home.id);
                         }
-                        else {
-                          for (var reservation in reservations) {
-                            if (reservation.hours == newReservation.hours && reservation.date == newReservation.date) {
-                              errorDialog(context, 'Esta cancha no está disponible para este horario y fecha. Pruebe en cambiar el horario, la fecha o la cancha e intente de nuevo.');
-                            } else {
-                              context.read<ReservationBloc>().add(AddReservation(reservation: newReservation));
-                              Navigator.pushReplacementNamed(context, Home.id);
-                            }
-                          }
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.transparent,
-                        foregroundColor: Colors.transparent,
-                        shadowColor: Colors.transparent,
-                      ),
-                      label: Icon(Icons.calendar_today_rounded, color: white),
-                      icon: Text('Guardar reservación',
-                          style: TextStyle(color: white, fontSize: 20)));
-                },
-              ),
-            ),
+                      }
+                    }
+                  },
+                );
+              },
+            )
           ],
         ),
       ),
     );
   }
 
+  // Crear dialog para mostrar errores
   Future<dynamic> errorDialog(BuildContext context, String errorMsg) {
     return showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
         title: const Text('Reserva fallida'),
         content: Text(errorMsg),
         actionsPadding: const EdgeInsets.only(right: 15, bottom: 15),
         actions: [
-          Container(
+          // Custom Button
+          CustomButton(
+            label: 'Entendido',
+            fontSize: 16, 
+            onPressed: () => Navigator.pop(context),
             width: 120,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
-                gradient: LinearGradient(
-                    colors: [primary, secondary],
-                    begin: Alignment.centerLeft,
-                    end: Alignment.centerRight)),
-            child: ElevatedButton(
-                onPressed: () => Navigator.pop(context),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.transparent,
-                  foregroundColor: Colors.transparent,
-                  shadowColor: Colors.transparent,
+            height: 50,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<Weather> getWeather() async {
+    weather = await weatherService.getWeatherData('Caracas');
+    return weather;
+  }
+
+  Future<dynamic> detailsDialog(BuildContext context) {
+    var currentDate = '${DateTime.now().month}/${DateTime.now().day}/${DateTime.now().year}';
+
+    return showDialog(
+      context: context, 
+      builder: (context) => AlertDialog(
+        insetPadding: const EdgeInsets.symmetric(horizontal: 15),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Información del clima', style: TextStyle(color: primary, fontSize: 20, fontWeight: FontWeight.w500)),
+            const SizedBox(width: 10),
+            Icon(Icons.cloud_queue_rounded, color: primary)
+          ],
+        ),
+        content: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            DateFormat().add_yMd().format(DateTime.parse(date.toString())) == currentDate 
+              ? Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text('${weather.temperature}°', style: const TextStyle(fontSize: 46, fontWeight: FontWeight.w500)),
+                  const SizedBox(height: 5),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text('${weather.maxTemp.toInt()}°'),
+                      const Text(' | '),
+                      Text('${weather.minTemp.toInt()}°'),
+                    ],
+                  ),
+                  const SizedBox(height: 15),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text.rich(TextSpan(
+                        text: 'Prob. de lluvia: ',
+                        style: const TextStyle(fontSize: 20),
+                        children: [
+                          TextSpan(
+                            text: '${weather.chanceOfRain}%',
+                            style: TextStyle(color: primary, fontSize: 20, fontWeight: FontWeight.w500)
+                          )
+                        ]
+                      )),
+
+                      const SizedBox(width: 5),
+
+                      getWeatherIcon()
+                    ],
+                  ),
+
+                  const SizedBox(height: 20),
+                  SvgPicture.asset('assets/images/weather.svg', height: 150),
+                  const SizedBox(height: 20),
+                ],
+              ) 
+            
+            : Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const [
+                Text('No tenemos información del clima para esta fecha.', 
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.w500, color: Colors.black54),
+                  textAlign: TextAlign.center,
                 ),
-                child: Text('Entendido',
-                    style: TextStyle(color: white, fontSize: 16))),
+                SizedBox(height: 5),
+                Icon(Icons.cloud_off_rounded, size: 42, color: Colors.black54)
+              ],
+            )
+          ],
+        ),
+        actionsPadding: const EdgeInsets.only(right: 20, bottom: 20),
+        actions: [
+          // Custom Button
+          CustomButton(
+            label: 'Cerrar',
+            fontSize: 16,
+            onPressed: () => Navigator.pop(context),
+            height: 50,
+            width: 120,
           )
         ],
       ),

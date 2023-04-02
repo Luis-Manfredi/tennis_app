@@ -65,7 +65,7 @@ class Welcome extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 20),
                       Text('¡Bienvenido!', style: TextStyle(color: white, fontSize: 46)),
                       const SizedBox(height: 10),
                       Text(description, style: TextStyle(fontSize: 16, color: white))

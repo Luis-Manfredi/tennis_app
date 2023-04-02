@@ -17,12 +17,18 @@ class Home extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-            onPressed: () => Navigator.pop(context),
-            icon: const Icon(Icons.arrow_back_ios_new_rounded),
-            color: primary),
+        leadingWidth: 120,
+        leading: TextButton.icon(
+          onPressed: () => Navigator.pop(context),
+          style: TextButton.styleFrom(
+            padding: EdgeInsets.zero,
+            foregroundColor: primary
+          ),
+          icon: const Icon(Icons.arrow_back_ios_new_rounded), 
+          label: const Text('Regresar')
+        ),
         bottom: PreferredSize(
-            preferredSize: Size(MediaQuery.of(context).size.width, 100),
+            preferredSize: Size(MediaQuery.of(context).size.width, 80),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
               child: Row(
@@ -32,7 +38,7 @@ class Home extends StatelessWidget {
                     children: [
                       Text('$currentDay $day de $monthsName, $year',
                           style: TextStyle(
-                              fontSize: 20,
+                              fontSize: 16,
                               fontWeight: FontWeight.w300,
                               color: lightText)),
                       Text('Inicio',
@@ -49,7 +55,7 @@ class Home extends StatelessWidget {
               const Text('Luis Manfredi'),
               const SizedBox(width: 10),
               CircleAvatar(
-                  radius: 20,
+                  radius: 16,
                   backgroundColor: background,
                   backgroundImage: const AssetImage('assets/images/me.jpg'))
             ],
@@ -66,7 +72,7 @@ class Home extends StatelessWidget {
           return reservationList.isEmpty 
               ? const Center(child: Text('No hay reservaciones', style: TextStyle(color: Colors.black54, fontSize: 24))) 
               : SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(20, 20, 20, 60),
+            padding: const EdgeInsets.fromLTRB(10, 20, 10, 60),
             child: Column(
                 children: reservationList.map((reservation) => CustomListTile(reservation: reservation)).toList(),
             ),
@@ -79,6 +85,7 @@ class Home extends StatelessWidget {
             Navigator.pushReplacementNamed(context, Reservations.id),
         backgroundColor: primary,
         foregroundColor: white,
+        tooltip: 'Agregar reserva',
         child: const Icon(Icons.calendar_month_rounded),
       ),
     );

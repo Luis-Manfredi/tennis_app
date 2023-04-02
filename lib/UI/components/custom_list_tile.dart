@@ -8,6 +8,7 @@ import '../../Domain/bloc_exports.dart';
 import '../../Domain/models/reservation.dart';
 import '../../Domain/models/weather.dart';
 import '../constants/colors.dart';
+import 'custom_button.dart';
 
 class CustomListTile extends StatefulWidget {
   const CustomListTile({
@@ -65,13 +66,13 @@ class _CustomListTileState extends State<CustomListTile> {
               child: Image.asset(
                 'assets/images/court.png', 
                 height: 200, 
-                width: 150,
+                width: 135,
                 fit: BoxFit.cover,
               )
             ),
     
             Padding(
-              padding: const EdgeInsets.all(10),
+              padding: const EdgeInsets.fromLTRB(10, 10, 0, 10),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -98,7 +99,7 @@ class _CustomListTileState extends State<CustomListTile> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      CircleAvatar(backgroundColor: primary, backgroundImage: NetworkImage(widget.reservation.image)),
+                      CircleAvatar(backgroundColor: primary, backgroundImage: NetworkImage(widget.reservation.image), radius: 16),
                       const SizedBox(width: 5),
                       Text(widget.reservation.username, style: const TextStyle(fontWeight: FontWeight.w500))
                     ],
@@ -108,8 +109,10 @@ class _CustomListTileState extends State<CustomListTile> {
             ),
 
             PopupMenuButton(
+              tooltip: 'Ver opciones',
               icon: const Icon(Icons.more_vert, color: Colors.black87),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+              // padding: EdgeInsets.zero,
               itemBuilder: (context) => [
               PopupMenuItem(
                 child: TextButton.icon(
@@ -143,7 +146,7 @@ class _CustomListTileState extends State<CustomListTile> {
     return showDialog(
       context: context, 
       builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        insetPadding: const EdgeInsets.symmetric(horizontal: 15),
         title: const Text('Información', style: TextStyle(fontSize: 26)),
         content: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -206,7 +209,7 @@ class _CustomListTileState extends State<CustomListTile> {
                     ],
                   ),
                   const SizedBox(height: 10),
-                  Text('${weather.temperature}', style: const TextStyle(fontSize: 32, fontWeight: FontWeight.w500)),
+                  Text('${weather.temperature}°', style: const TextStyle(fontSize: 32, fontWeight: FontWeight.w500)),
                   const SizedBox(height: 5),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -258,26 +261,13 @@ class _CustomListTileState extends State<CustomListTile> {
         ),
         actionsPadding: const EdgeInsets.only(right: 20, bottom: 20),
         actions: [
-          Container(
-            height: 40,
-            width: 100,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15),
-              gradient: LinearGradient(
-                colors: [primary, secondary],
-                begin: Alignment.centerLeft,
-                end: Alignment.centerRight
-              )
-            ),
-            child: ElevatedButton(
-              onPressed: () => Navigator.pop(context),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.transparent,
-                foregroundColor: Colors.white,
-                shadowColor: Colors.transparent,
-              ),
-              child: const Text('Cerrar', style: TextStyle(fontSize: 16))
-            ),
+          // Custom Button
+          CustomButton(
+            label: 'Cerrar',
+            fontSize: 16,
+            onPressed: () => Navigator.pop(context),
+            height: 50,
+            width: 120,
           )
         ],
       ),
