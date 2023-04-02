@@ -10,9 +10,9 @@ and get the dependencies by executing this scripts on your terminal:
 Una vez que hagas 'pull' a este repositorio, es recomendado que limpies la cache de 
 flutter y descargues las dependencias al ejecutar estos scripts en tu terminal: 
 
-''' flutter clean '''
+``` flutter clean ```
 And then... | Y luego...
-''' flutter pub get '''
+``` flutter pub get ```
 
 ## About | Acerca de
 
