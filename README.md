@@ -1,16 +1,32 @@
 # tennis_app
 
-A new Flutter project.
+Tennis courts reservation App | App de reservaciones de canchas de tennis
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+One you pulled this repository, it is recommended that you clean the flutter cache 
+and get the dependencies by executing this scripts on your terminal:
 
-A few resources to get you started if this is your first Flutter project:
+Una vez que hagas 'pull' a este repositorio, es recomendado que limpies la cache de 
+flutter y descargues las dependencias al ejecutar estos scripts en tu terminal: 
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+''' flutter clean '''
+And then... | Y luego...
+''' flutter pub get '''
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## About | Acerca de
+
+This is a demo app where you can reserve a tennis court by a determined hour of the
+day. You can also check the current weather thanks to the API provided by WeatherAPI.
+The app is getting as reference the weather of Caracas, capital city of Venezuela. 
+
+This app has been tested using an Android emulator: *(Pixel 6 API 31 - Android 12)*
+and a real phone: *Huawei Mate 20 Lite*.
+
+Esta es una aplicación de demostración donde puedes reservar una cancha de tenis para 
+una hora determinada del día. También puedes consultar el tiempo actual gracias a la 
+API proporcionada por WeatherAPI. La aplicación está recibiendo como referencia el
+clima de Caracas, ciudad capital de Venezuela.
+
+Esta aplicación ha sido probada en un emulador Android: *(Pixel 6 API 31 - Android 12)*
+y en un teléfono real: *Huawei Mate 20 Lite*.
