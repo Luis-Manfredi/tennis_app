@@ -66,7 +66,7 @@ class _CustomListTileState extends State<CustomListTile> {
               child: Image.asset(
                 'assets/images/court.png', 
                 height: 200, 
-                width: 135,
+                width: 130,
                 fit: BoxFit.cover,
               )
             ),
