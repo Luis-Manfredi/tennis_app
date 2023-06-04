@@ -2,15 +2,20 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
-import '../Domain/models/weather.dart';
-import '../Utils/api_utils.dart';
+import '../../Domain/entities/weather.dart';
+import '../../Utils/api_utils.dart';
 
-class WeatherService {
-  Future<Weather> getWeatherData(String place) async {
+abstract class WeatherAPIData {
+  Future<Weather> getWeatherData();
+}
+
+class WeatherService extends WeatherAPIData {
+  @override
+  Future<Weather> getWeatherData() async {
     try {
       final queryParameters = {
         'key': APIUtils.key,
-        'q': place
+        'q': 'Caracas'
       };
 
       final uri = Uri.http('api.weatherapi.com', '/v1/forecast.json', queryParameters);
@@ -18,7 +23,7 @@ class WeatherService {
       final response = await http.get(uri);
 
       if (response.statusCode == 200) {
-        // print('API connected successfully');
+        print(response.body);
         return Weather.fromJson(jsonDecode(response.body));
       } else {
         throw Exception('Could not get weather data');

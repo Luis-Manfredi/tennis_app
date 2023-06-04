@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../bloc/reservation_bloc.dart';
 import '../bloc_exports.dart';
-import '../../Domain/models/reservation.dart';
+import '../../Domain/entities/reservation.dart';
+import '../reservations_bloc/reservation_bloc.dart';
 import 'reservations.dart';
 
 import '../components/custom_list_tile.dart';

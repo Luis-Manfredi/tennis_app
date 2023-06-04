@@ -3,11 +3,12 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:ionicons/ionicons.dart';
 
-import '../../Data/weather_service.dart';
-import '../bloc/reservation_bloc.dart';
+import '../../Controllers/weather_controller.dart';
+import '../../Data/remote/weather_service.dart';
+import '../reservations_bloc/reservation_bloc.dart';
 import '../bloc_exports.dart';
-import '../../Domain/models/reservation.dart';
-import '../../Domain/models/weather.dart';
+import '../../Domain/entities/reservation.dart';
+import '../../Domain/entities/weather.dart';
 import '../constants/colors.dart';
 import 'custom_button.dart';
 
@@ -27,11 +28,6 @@ class _CustomListTileState extends State<CustomListTile> {
 
   WeatherService weatherService = WeatherService();
   Weather weather = const Weather();
-
-  Future<Weather> getWeather() async {
-    weather = await weatherService.getWeatherData('Caracas');
-    return weather;
-  }
 
   void deleteReservation (BuildContext context) {
     context.read<ReservationBloc>().add(DeleteReservation(reservation: widget.reservation));
@@ -119,7 +115,7 @@ class _CustomListTileState extends State<CustomListTile> {
                 child: TextButton.icon(
                   onPressed: () async {
                     Navigator.pop(context);
-                    await getWeather();
+                    weather = await WeatherController.getWeather();
                     if (context.mounted) detailsDialog(context);
                   }, 
                   style: TextButton.styleFrom(foregroundColor: primary),

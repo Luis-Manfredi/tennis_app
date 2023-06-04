@@ -1,4 +1,4 @@
-import '../Domain/models/user.dart';
+import '../../Domain/entities/user.dart';
 
 List<User> users = [
   User(

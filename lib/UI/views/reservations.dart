@@ -4,13 +4,14 @@ import 'package:intl/intl.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:tennis_app/UI/bloc_exports.dart';
 
-import '../../Data/courts_data.dart';
-import '../../Data/users_list.dart';
-import '../../Data/weather_service.dart';
-import '../../Domain/models/reservation.dart';
-import '../../Domain/models/user.dart';
-import '../../Domain/models/weather.dart';
-import '../bloc/reservation_bloc.dart';
+import '../../Controllers/weather_controller.dart';
+import '../../Data/local/courts_data.dart';
+import '../../Data/local/users_list.dart';
+import '../../Data/remote/weather_service.dart';
+import '../../Domain/entities/reservation.dart';
+import '../../Domain/entities/user.dart';
+import '../../Domain/entities/weather.dart';
+import '../reservations_bloc/reservation_bloc.dart';
 import '../components/custom_button.dart';
 import '../constants/colors.dart';
 import 'home.dart';
@@ -29,7 +30,6 @@ class _ReservationsState extends State<Reservations> {
   String? hourRange;
   User? userSelected;
   DateTime date = DateTime.now();
-  WeatherService weatherService = WeatherService();
   Weather weather = const Weather();
 
   getWeatherIcon() {
@@ -210,7 +210,7 @@ class _ReservationsState extends State<Reservations> {
                   children: [
                     TextButton.icon(
                       onPressed: () async {
-                        await getWeather();
+                        weather = await WeatherController.getWeather();
                         if (context.mounted) detailsDialog(context);
                       },
                       style: TextButton.styleFrom(foregroundColor: primary), 
@@ -340,11 +340,6 @@ class _ReservationsState extends State<Reservations> {
         ],
       ),
     );
-  }
-
-  Future<Weather> getWeather() async {
-    weather = await weatherService.getWeatherData('Caracas');
-    return weather;
   }
 
   Future<dynamic> detailsDialog(BuildContext context) {

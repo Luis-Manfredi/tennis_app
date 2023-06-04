@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:tennis_app/Domain/models/reservation.dart';
+import 'package:tennis_app/Domain/entities/reservation.dart';
 
 part 'reservation_event.dart';
 part 'reservation_state.dart';
