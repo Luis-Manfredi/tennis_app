@@ -4,7 +4,8 @@ import 'package:intl/intl.dart';
 import 'package:ionicons/ionicons.dart';
 
 import '../../Data/weather_service.dart';
-import '../../Domain/bloc_exports.dart';
+import '../bloc/reservation_bloc.dart';
+import '../bloc_exports.dart';
 import '../../Domain/models/reservation.dart';
 import '../../Domain/models/weather.dart';
 import '../constants/colors.dart';

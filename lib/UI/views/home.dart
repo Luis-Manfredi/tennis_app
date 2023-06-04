@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../Domain/bloc_exports.dart';
+import '../bloc/reservation_bloc.dart';
+import '../bloc_exports.dart';
 import '../../Domain/models/reservation.dart';
 import 'reservations.dart';
 

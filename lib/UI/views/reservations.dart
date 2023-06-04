@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:ionicons/ionicons.dart';
-import 'package:tennis_app/Domain/bloc_exports.dart';
+import 'package:tennis_app/UI/bloc_exports.dart';
 
 import '../../Data/courts_data.dart';
 import '../../Data/users_list.dart';
@@ -10,6 +10,7 @@ import '../../Data/weather_service.dart';
 import '../../Domain/models/reservation.dart';
 import '../../Domain/models/user.dart';
 import '../../Domain/models/weather.dart';
+import '../bloc/reservation_bloc.dart';
 import '../components/custom_button.dart';
 import '../constants/colors.dart';
 import 'home.dart';
@@ -96,12 +97,6 @@ class _ReservationsState extends State<Reservations> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Selección de cancha
-                Padding(
-                  padding: const EdgeInsets.only(left: 20),
-                  child: Text('Elegir una cancha',
-                      style: TextStyle(fontSize: 18, color: primary)),
-                ),
-                const SizedBox(height: 5),
                 Container(
                   width: MediaQuery.of(context).size.width,
                   padding:
@@ -115,7 +110,7 @@ class _ReservationsState extends State<Reservations> {
                     underline: Container(),
                     borderRadius: BorderRadius.circular(15),
                     isExpanded: true,
-                    hint: const Text('Seleccione una cancha'),
+                    hint: Text('Seleccione una cancha', style: TextStyle(color: primary, fontWeight: FontWeight.w500)),
                     items: courtsList
                         .map((court) => DropdownMenuItem(
                               value: court,
@@ -127,15 +122,9 @@ class _ReservationsState extends State<Reservations> {
                   ),
                 ),
 
-                const SizedBox(height: 10),
+                const SizedBox(height: 15),
 
                 // Seleeción de horario
-                Padding(
-                  padding: const EdgeInsets.only(left: 20),
-                  child: Text('Elegir una horario',
-                      style: TextStyle(fontSize: 18, color: primary)),
-                ),
-                const SizedBox(height: 5),
                 Container(
                   width: MediaQuery.of(context).size.width,
                   padding:
@@ -149,7 +138,7 @@ class _ReservationsState extends State<Reservations> {
                     underline: Container(),
                     borderRadius: BorderRadius.circular(15),
                     isExpanded: true,
-                    hint: const Text('Seleccione un horario'),
+                    hint: Text('Seleccione un horario', style: TextStyle(color: primary, fontWeight: FontWeight.w500)),
                     items: hours
                         .map((hour) => DropdownMenuItem(
                               value: hour,
@@ -161,15 +150,9 @@ class _ReservationsState extends State<Reservations> {
                   ),
                 ),
 
-                const SizedBox(height: 10),
+                const SizedBox(height: 15),
 
                 // Selección de fecha
-                Padding(
-                  padding: const EdgeInsets.only(left: 20),
-                  child: Text('Seleccionar una fecha',
-                      style: TextStyle(fontSize: 18, color: primary)),
-                ),
-                const SizedBox(height: 5),
                 ElevatedButton(
                     onPressed: () async {
                       DateTime? selectedDate = await showDatePicker(
@@ -198,14 +181,29 @@ class _ReservationsState extends State<Reservations> {
                       elevation: 0,
                       minimumSize: Size(MediaQuery.of(context).size.width, 65),
                     ),
-                    child: Text(
-                        DateFormat()
-                            .add_yMd()
-                            .format(DateTime.parse(date.toString())),
-                        style: const TextStyle(
-                            color: Colors.black54,
-                            fontWeight: FontWeight.w400,
-                            fontSize: 16))),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        RichText(
+                          text: TextSpan(
+                            text: 'Fecha: ',
+                            style: TextStyle(color: primary, fontWeight: FontWeight.w500, fontSize: 16),
+                            children: [
+                              TextSpan(
+                                text: DateFormat()
+                                .add_yMd()
+                                .format(DateTime.parse(date.toString())),
+                                style: const TextStyle(
+                                color: Colors.black54,
+                                fontWeight: FontWeight.w400),
+                              )
+                            ]
+                          )
+                        ),
+                        const Icon(Icons.calendar_today_rounded)
+                      ],
+                    )
+                  ),
 
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
@@ -225,12 +223,6 @@ class _ReservationsState extends State<Reservations> {
                 const SizedBox(height: 10),
 
                 // Seleccionar usuario
-                Padding(
-                  padding: const EdgeInsets.only(left: 20),
-                  child: Text('Elegir un usuario',
-                      style: TextStyle(fontSize: 18, color: primary)),
-                ),
-                const SizedBox(height: 5),
                 Container(
                   width: MediaQuery.of(context).size.width,
                   padding:
@@ -244,7 +236,7 @@ class _ReservationsState extends State<Reservations> {
                     underline: Container(),
                     borderRadius: BorderRadius.circular(15),
                     isExpanded: true,
-                    hint: const Text('Seleccione un usuario'),
+                    hint: Text('Seleccione un usuario', style: TextStyle(color: primary, fontWeight: FontWeight.w500)),
                     items: users
                         .map((user) => DropdownMenuItem(
                               value: user,

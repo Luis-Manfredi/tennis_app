@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-import 'Domain/bloc_exports.dart';
+import 'UI/bloc/reservation_bloc.dart';
+import 'UI/bloc_exports.dart';
 import 'UI/constants/colors.dart';
 import 'UI/views/welcome.dart';
 import 'UI/services/router_service.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await dotenv.load(fileName: ".env");
 
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,

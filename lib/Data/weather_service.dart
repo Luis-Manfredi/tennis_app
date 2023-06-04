@@ -3,14 +3,13 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 import '../Domain/models/weather.dart';
+import '../Utils/api_utils.dart';
 
 class WeatherService {
   Future<Weather> getWeatherData(String place) async {
-    // API Key: 985852e195054f4db4f155612220912
-
     try {
       final queryParameters = {
-        'key': '985852e195054f4db4f155612220912',
+        'key': APIUtils.key,
         'q': place
       };
 
